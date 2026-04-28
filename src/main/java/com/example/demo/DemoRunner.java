@@ -32,7 +32,7 @@ public class DemoRunner implements CommandLineRunner {
         check("deposit",    () -> bankService.deposit(bob.getId(), BigDecimal.valueOf(300)));
         check("getBalance", () -> bankService.getBalance(alice.getId()));
 
-        System.out.println();
+        System.out.println("===========Задачи на коллекции=================");
 
         check("removeNegatives", () -> collectionService.removeNegatives(new ArrayList<>(List.of(1, -2, 3, -4))));
         check("addDefaults",     () -> collectionService.addDefaults("a", "b", "c"));
