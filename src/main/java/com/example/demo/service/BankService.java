@@ -15,7 +15,6 @@ public class BankService {
 
     private final AccountRepository repo;
 
-    // БАГ 1: checked exception не откатывает транзакцию
     @Transactional
     public void transfer(Long fromId, Long toId, BigDecimal amount)
             throws InsufficientFundsException {
@@ -31,7 +30,6 @@ public class BankService {
         to.setBalance(to.getBalance().add(amount));
     }
 
-    // БАГ 2: exception проглочен — транзакция не откатится
     @Transactional
     public void applyBonus(Long id, BigDecimal bonus) {
         try {
@@ -46,7 +44,6 @@ public class BankService {
         }
     }
 
-    // БАГ 3: self-invocation — @Transactional на private не работает
     public void deposit(Long id, BigDecimal amount) {
         doDeposit(id, amount);
     }
@@ -58,11 +55,10 @@ public class BankService {
         repo.save(account);
     }
 
-    // БАГ 4: readOnly = true, но меняем данные
     @Transactional(readOnly = true)
     public BigDecimal getBalance(Long id) {
         Account account = repo.findById(id).orElseThrow();
-        account.setBalance(account.getBalance().add(BigDecimal.ONE)); // мутация!
+        account.setBalance(account.getBalance().add(BigDecimal.ONE));
         return account.getBalance();
     }
 }
